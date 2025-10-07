@@ -432,6 +432,19 @@ footer {
     animation: fadeIn 1.5s ease-out;
 }
 
+.keyboard-hint {
+    margin-top: 10px;
+    font-size: 0.85rem;
+    color: var(--primary-light);
+    opacity: 0.8;
+    transition: var(--transition);
+}
+
+.keyboard-hint:hover {
+    opacity: 1;
+    transform: scale(1.05);
+}
+
 .back-to-top {
     position: fixed; 
     bottom: 30px; 
@@ -542,6 +555,22 @@ footer {
     }
     100% { 
         transform: rotate(360deg); 
+    }
+}
+
+/* 当前版本高亮动画 */
+@keyframes currentVersionHighlight {
+    0% { 
+        box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.4);
+        transform: scale(1);
+    }
+    50% { 
+        box-shadow: 0 0 0 20px rgba(76, 175, 80, 0);
+        transform: scale(1.02);
+    }
+    100% { 
+        box-shadow: 0 0 0 0 rgba(76, 175, 80, 0);
+        transform: scale(1);
     }
 }
 
