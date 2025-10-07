@@ -200,12 +200,82 @@ function setupKeyboardShortcuts() {
         if (event.key === 'Escape') {
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
-        // 空格键暂停/继续倒计时（可选功能）
+        // 空格键一键定位至当前版本
         if (event.key === ' ' && event.target === document.body) {
             event.preventDefault();
-            // 这里可以添加暂停功能
+            scrollToCurrentVersion();
         }
     });
+}
+
+// 一键定位至当前版本
+function scrollToCurrentVersion() {
+    const currentVersionCard = document.getElementById('current-version');
+    if (currentVersionCard) {
+        // 添加高亮动画效果
+        currentVersionCard.style.animation = 'none';
+        setTimeout(() => {
+            currentVersionCard.style.animation = 'currentVersionHighlight 2s ease-in-out';
+        }, 10);
+        
+        // 平滑滚动到当前版本
+        currentVersionCard.scrollIntoView({ 
+            behavior: 'smooth', 
+            block: 'center',
+            inline: 'center'
+        });
+        
+        // 显示提示信息
+        showScrollHint('已定位到当前版本');
+    } else {
+        showScrollHint('未找到当前版本');
+    }
+}
+
+// 显示滚动提示
+function showScrollHint(message) {
+    // 移除已存在的提示
+    const existingHint = document.getElementById('scroll-hint');
+    if (existingHint) {
+        existingHint.remove();
+    }
+    
+    // 创建新的提示元素
+    const hint = document.createElement('div');
+    hint.id = 'scroll-hint';
+    hint.textContent = message;
+    hint.style.cssText = `
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: rgba(0, 0, 0, 0.8);
+        color: white;
+        padding: 10px 20px;
+        border-radius: 20px;
+        font-size: 14px;
+        z-index: 1000;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        pointer-events: none;
+    `;
+    
+    document.body.appendChild(hint);
+    
+    // 显示动画
+    setTimeout(() => {
+        hint.style.opacity = '1';
+    }, 10);
+    
+    // 自动隐藏
+    setTimeout(() => {
+        hint.style.opacity = '0';
+        setTimeout(() => {
+            if (hint.parentNode) {
+                hint.remove();
+            }
+        }, 300);
+    }, 2000);
 }
 
 // 页面加载完成后的初始化
