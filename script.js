@@ -1,6 +1,6 @@
-// 星穹铁道版本倒计时 - JavaScript功能文件
+// 星穹铁道版本倒计时 - 现代化JavaScript功能文件
 
-// 版本数据配置 <mcreference link="https://www.bilibili.com/opus/1003434914483273776?bsource=toutiao_bilibilih5" index="1">1</mcreference> <mcreference link="https://www.bilibili.com/opus/1014032797836247040?bsource=toutiao_bilibilih5" index="4">4</mcreference>
+// 版本数据配置
 const versionData = [
     { version: "1.0", releaseDate: "2023-04-26", endDate: "2023-06-07" },
     { version: "1.1", releaseDate: "2023-06-07", endDate: "2023-07-19" },
@@ -30,6 +30,13 @@ const versionData = [
     { version: "4.0-预测", releaseDate: "2026-03-11", endDate: "2026-04-22" }
 ];
 
+// 应用状态管理
+let appState = {
+    currentFilter: 'all',
+    searchQuery: '',
+    filteredVersions: [...versionData]
+};
+
 // 工具函数：计算倒计时
 function calculateCountdown(endDate) {
     const targetDate = new Date(endDate).getTime();
@@ -53,7 +60,7 @@ function formatNumber(num) {
     return num < 10 ? `0${num}` : num;
 }
 
-// 工具函数：获取版本状态文本
+// 工具函数：获取版本状态
 function getVersionStatus(version) {
     const now = new Date();
     const start = new Date(version.releaseDate);
@@ -62,76 +69,146 @@ function getVersionStatus(version) {
     const isCurrent = now >= start && now <= end;
     
     if (isCurrent) {
-        return { text: '当前版本', isCurrent: true };
+        return { text: '当前版本', isCurrent: true, type: 'current' };
     } else if (countdown.expired) {
-        return { text: '已更新', isCurrent: false };
+        return { text: '已更新', isCurrent: false, type: 'past' };
     } else {
         const daysToRelease = start > now ? Math.ceil((start - now) / (1000 * 60 * 60 * 24)) : 0;
         const text = daysToRelease > 0 ? `还有 ${daysToRelease} 天发布` : `剩余 ${countdown.days} 天`;
-        return { text, isCurrent: false };
+        return { text, isCurrent: false, type: 'upcoming' };
     }
 }
 
-// 渲染版本倒计时卡片
-function renderVersionCountdown() {
-    const versionList = document.getElementById('versionList');
+// 工具函数：获取当前版本信息
+function getCurrentVersionInfo() {
+    const now = new Date();
+    let currentVersion = null;
+    let daysRemaining = 0;
     
-    // 显示加载状态
-    versionList.innerHTML = `
-        <div class="loading">
-            <div class="loading-spinner"></div>
-            正在加载版本数据...
+    for (const version of versionData) {
+        const start = new Date(version.releaseDate);
+        const end = new Date(version.endDate);
+        
+        if (now >= start && now <= end) {
+            currentVersion = version;
+            const countdown = calculateCountdown(version.endDate);
+            daysRemaining = countdown.days;
+            break;
+        }
+    }
+    
+    return { currentVersion, daysRemaining };
+}
+
+// 工具函数：过滤版本数据
+function filterVersions() {
+    const { currentFilter, searchQuery } = appState;
+    
+    let filtered = versionData.filter(version => {
+        // 搜索过滤
+        if (searchQuery && !version.version.toLowerCase().includes(searchQuery.toLowerCase())) {
+            return false;
+        }
+        
+        // 状态过滤
+        if (currentFilter !== 'all') {
+            const status = getVersionStatus(version);
+            return status.type === currentFilter;
+        }
+        
+        return true;
+    });
+    
+    appState.filteredVersions = filtered;
+    return filtered;
+}
+
+// 更新统计信息
+function updateStats() {
+    const { currentVersion, daysRemaining } = getCurrentVersionInfo();
+    
+    document.getElementById('totalVersions').textContent = versionData.length;
+    document.getElementById('currentVersion').textContent = currentVersion ? `v${currentVersion.version}` : '-';
+    document.getElementById('daysRemaining').textContent = daysRemaining;
+}
+
+// 渲染版本卡片
+function renderVersionCard(version) {
+    const countdown = calculateCountdown(version.endDate);
+    const status = getVersionStatus(version);
+    
+    const versionCard = document.createElement('div');
+    versionCard.className = `version-card ${status.isCurrent ? 'current' : ''}`;
+    versionCard.dataset.version = version.version;
+    versionCard.dataset.status = status.type;
+    
+    if (status.isCurrent) {
+        versionCard.id = 'current-version';
+    }
+    
+    versionCard.innerHTML = `
+        <div class="version-header">
+            <h2 class="version-name">v${version.version}</h2>
+            <div class="version-status ${status.type}">${status.text}</div>
+        </div>
+        <div class="version-dates">
+            <div class="version-date">
+                <div class="date-label">开始日期</div>
+                <div class="date-value">${version.releaseDate}</div>
+            </div>
+            <div class="version-date">
+                <div class="date-label">结束日期</div>
+                <div class="date-value">${version.endDate}</div>
+            </div>
+        </div>
+        <div class="countdown-display">
+            <div class="countdown-label">剩余时间</div>
+            <div class="countdown-timer ${countdown.expired ? 'expired' : ''} ${!countdown.expired && !status.isCurrent ? 'upcoming' : ''}">
+                ${countdown.expired ? '已结束' : `${formatNumber(countdown.days)}天 ${formatNumber(countdown.hours)}:${formatNumber(countdown.minutes)}:${formatNumber(countdown.seconds)}`}
+            </div>
         </div>
     `;
     
-    // 延迟渲染以显示加载动画
+    return versionCard;
+}
+
+// 渲染版本列表
+function renderVersionList() {
+    const versionGrid = document.getElementById('versionList');
+    const filteredVersions = filterVersions();
+    
+    // 显示加载状态
+    versionGrid.innerHTML = `
+        <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: var(--text-muted);">
+            <i class="fas fa-spinner fa-spin" style="font-size: 2rem; margin-bottom: 16px;"></i>
+            <div>正在加载版本数据...</div>
+        </div>
+    `;
+    
+    // 延迟渲染以显示加载效果
     setTimeout(() => {
-        versionList.innerHTML = '';
+        versionGrid.innerHTML = '';
+        
+        if (filteredVersions.length === 0) {
+            versionGrid.innerHTML = `
+                <div style="grid-column: 1 / -1; text-align: center; padding: 60px; color: var(--text-muted);">
+                    <i class="fas fa-search" style="font-size: 3rem; margin-bottom: 16px; opacity: 0.5;"></i>
+                    <div style="font-size: 1.2rem; margin-bottom: 8px;">未找到匹配的版本</div>
+                    <div style="font-size: 0.9rem;">请尝试调整搜索条件或筛选器</div>
+                </div>
+            `;
+            return;
+        }
         
         let currentVersionCard = null;
         
-        versionData.forEach(version => {
-            const countdown = calculateCountdown(version.endDate);
-            const status = getVersionStatus(version);
-            const now = new Date();
-            const start = new Date(version.releaseDate);
-            const end = new Date(version.endDate);
-            const isCurrent = now >= start && now <= end;
+        filteredVersions.forEach(version => {
+            const card = renderVersionCard(version);
+            versionGrid.appendChild(card);
             
-            const versionCard = document.createElement('div');
-            versionCard.className = `version-card ${status.isCurrent ? 'current' : ''}`;
-            versionCard.dataset.version = version.version;
-            
-            // 如果是当前版本，添加特殊标识
-            if (status.isCurrent) {
-                versionCard.id = 'current-version';
-                currentVersionCard = versionCard;
+            if (version.version === getCurrentVersionInfo().currentVersion?.version) {
+                currentVersionCard = card;
             }
-            
-            versionCard.innerHTML = `
-                <div class="version-header">
-                    <h2 class="version-name">v${version.version}</h2>
-                    <div class="version-status ${status.isCurrent ? 'current' : ''}">${status.text}</div>
-                </div>
-                <div class="version-dates">
-                    <div class="version-date">
-                        <div class="date-label">开始日期</div>
-                        <div class="date-value">${version.releaseDate}</div>
-                    </div>
-                    <div class="version-date">
-                        <div class="date-label">结束日期</div>
-                        <div class="date-value">${version.endDate}</div>
-                    </div>
-                </div>
-                <div class="countdown-display">
-                    <div class="countdown-label">剩余时间</div>
-                    <div class="countdown-timer ${countdown.expired ? 'expired' : ''} ${!countdown.expired && !status.isCurrent ? 'upcoming' : ''}">
-                        ${countdown.expired ? '已结束' : `${formatNumber(countdown.days)}天 ${formatNumber(countdown.hours)}:${formatNumber(countdown.minutes)}:${formatNumber(countdown.seconds)}`}
-                    </div>
-                </div>
-            `;
-            
-            versionList.appendChild(versionCard);
         });
         
         // 如果有当前版本，自动滚动到该版本
@@ -145,14 +222,16 @@ function renderVersionCountdown() {
                 
                 // 添加高亮动画效果
                 currentVersionCard.style.animation = 'currentVersionHighlight 2s ease-in-out';
-            }, 1000);
+            }, 500);
         }
-    }, 800); // 延迟800ms显示加载效果
+    }, 300);
 }
 
 // 更新倒计时显示
 function updateCountdown() {
-    versionData.forEach(version => {
+    const filteredVersions = appState.filteredVersions;
+    
+    filteredVersions.forEach(version => {
         const countdown = calculateCountdown(version.endDate);
         const status = getVersionStatus(version);
         
@@ -167,15 +246,81 @@ function updateCountdown() {
         const statusElement = document.querySelector(`.version-card[data-version="${version.version}"] .version-status`);
         if (statusElement) {
             statusElement.textContent = status.text;
-            statusElement.className = `version-status ${status.isCurrent ? 'current' : ''}`;
+            statusElement.className = `version-status ${status.type}`;
         }
         
         // 更新卡片样式
         const cardElement = document.querySelector(`.version-card[data-version="${version.version}"]`);
         if (cardElement) {
             cardElement.className = `version-card ${status.isCurrent ? 'current' : ''}`;
+            cardElement.dataset.status = status.type;
         }
     });
+    
+    // 更新统计信息
+    updateStats();
+}
+
+// 设置筛选器功能
+function setupFilters() {
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    const searchInput = document.getElementById('versionSearch');
+    
+    // 筛选器按钮点击事件
+    filterButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            // 移除所有按钮的active类
+            filterButtons.forEach(btn => btn.classList.remove('active'));
+            
+            // 添加active类到当前按钮
+            button.classList.add('active');
+            
+            // 更新应用状态
+            appState.currentFilter = button.dataset.filter;
+            
+            // 重新渲染列表
+            renderVersionList();
+        });
+    });
+    
+    // 搜索框输入事件
+    searchInput.addEventListener('input', (e) => {
+        appState.searchQuery = e.target.value;
+        
+        // 防抖处理，避免频繁渲染
+        clearTimeout(searchInput.debounceTimer);
+        searchInput.debounceTimer = setTimeout(() => {
+            renderVersionList();
+        }, 300);
+    });
+}
+
+// 设置控制按钮功能
+function setupControls() {
+    const refreshBtn = document.getElementById('refreshBtn');
+    const currentVersionBtn = document.getElementById('currentVersionBtn');
+    
+    // 刷新按钮
+    refreshBtn.addEventListener('click', () => {
+        // 添加旋转动画
+        refreshBtn.style.transform = 'rotate(360deg)';
+        refreshBtn.style.transition = 'transform 0.5s ease';
+        
+        // 重新渲染列表
+        renderVersionList();
+        updateStats();
+        
+        // 显示刷新提示
+        showToast('数据已刷新', 'success');
+        
+        // 重置旋转动画
+        setTimeout(() => {
+            refreshBtn.style.transform = 'rotate(0deg)';
+        }, 500);
+    });
+    
+    // 定位当前版本按钮
+    currentVersionBtn.addEventListener('click', scrollToCurrentVersion);
 }
 
 // 设置返回顶部功能
@@ -205,6 +350,11 @@ function setupKeyboardShortcuts() {
             event.preventDefault();
             scrollToCurrentVersion();
         }
+        // Ctrl+F 聚焦搜索框
+        if (event.ctrlKey && event.key === 'f') {
+            event.preventDefault();
+            document.getElementById('versionSearch').focus();
+        }
     });
 }
 
@@ -226,66 +376,111 @@ function scrollToCurrentVersion() {
         });
         
         // 显示提示信息
-        showScrollHint('已定位到当前版本');
+        showToast('已定位到当前版本', 'info');
     } else {
-        showScrollHint('未找到当前版本');
+        showToast('未找到当前版本', 'warning');
     }
 }
 
-// 显示滚动提示
-function showScrollHint(message) {
-    // 移除已存在的提示
-    const existingHint = document.getElementById('scroll-hint');
-    if (existingHint) {
-        existingHint.remove();
+// 显示Toast提示
+function showToast(message, type = 'info') {
+    // 移除已存在的Toast
+    const existingToast = document.getElementById('app-toast');
+    if (existingToast) {
+        existingToast.remove();
     }
     
-    // 创建新的提示元素
-    const hint = document.createElement('div');
-    hint.id = 'scroll-hint';
-    hint.textContent = message;
-    hint.style.cssText = `
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background: rgba(0, 0, 0, 0.8);
-        color: white;
-        padding: 10px 20px;
-        border-radius: 20px;
-        font-size: 14px;
-        z-index: 1000;
-        opacity: 0;
-        transition: opacity 0.3s ease;
-        pointer-events: none;
+    // 创建Toast元素
+    const toast = document.createElement('div');
+    toast.id = 'app-toast';
+    toast.innerHTML = `
+        <div class="toast-content">
+            <i class="fas ${getToastIcon(type)}"></i>
+            <span>${message}</span>
+        </div>
     `;
     
-    document.body.appendChild(hint);
+    // 设置Toast样式
+    toast.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: var(--bg-card);
+        border: 1px solid var(--border-light);
+        border-radius: var(--radius-md);
+        padding: 16px 20px;
+        color: var(--text-primary);
+        font-size: 0.9rem;
+        z-index: 10000;
+        box-shadow: var(--shadow-heavy);
+        backdrop-filter: blur(10px);
+        transform: translateX(100%);
+        transition: transform 0.3s ease;
+        max-width: 300px;
+    `;
+    
+    document.body.appendChild(toast);
     
     // 显示动画
     setTimeout(() => {
-        hint.style.opacity = '1';
+        toast.style.transform = 'translateX(0)';
     }, 10);
     
     // 自动隐藏
     setTimeout(() => {
-        hint.style.opacity = '0';
+        toast.style.transform = 'translateX(100%)';
         setTimeout(() => {
-            if (hint.parentNode) {
-                hint.remove();
+            if (toast.parentNode) {
+                toast.remove();
             }
         }, 300);
-    }, 2000);
+    }, 3000);
+}
+
+// 获取Toast图标
+function getToastIcon(type) {
+    const icons = {
+        success: 'fa-check-circle',
+        error: 'fa-exclamation-circle',
+        warning: 'fa-exclamation-triangle',
+        info: 'fa-info-circle'
+    };
+    return icons[type] || 'fa-info-circle';
+}
+
+// 隐藏加载动画
+function hideLoading() {
+    const loadingOverlay = document.getElementById('loadingOverlay');
+    if (loadingOverlay) {
+        loadingOverlay.style.opacity = '0';
+        setTimeout(() => {
+            loadingOverlay.style.display = 'none';
+        }, 300);
+    }
 }
 
 // 页面加载完成后的初始化
 function initializePage() {
-    renderVersionCountdown();
+    // 显示加载动画
+    document.getElementById('loadingOverlay').style.display = 'flex';
+    
+    // 初始化统计信息
+    updateStats();
+    
+    // 渲染版本列表
+    renderVersionList();
+    
+    // 设置各种功能
+    setupFilters();
+    setupControls();
     setupBackToTop();
     setupKeyboardShortcuts();
     
     // 启动倒计时更新
     setInterval(updateCountdown, 1000);
+    
+    // 隐藏加载动画
+    setTimeout(hideLoading, 1000);
     
     // 添加页面加载完成动画
     document.body.style.opacity = '0';
@@ -300,11 +495,12 @@ function initializePage() {
 function handleErrors() {
     window.addEventListener('error', (event) => {
         console.error('页面错误:', event.error);
-        // 可以在这里添加错误报告或用户提示
+        showToast('页面加载出现错误', 'error');
     });
     
     window.addEventListener('unhandledrejection', (event) => {
         console.error('未处理的Promise拒绝:', event.reason);
+        showToast('应用出现异常', 'error');
     });
 }
 
@@ -312,7 +508,8 @@ function handleErrors() {
 window.CountdownApp = {
     initialize: initializePage,
     updateCountdown: updateCountdown,
-    renderVersionCountdown: renderVersionCountdown
+    renderVersionList: renderVersionList,
+    scrollToCurrentVersion: scrollToCurrentVersion
 };
 
 // 页面加载完成后初始化

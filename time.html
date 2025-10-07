@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-CN" id="htmlElement">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -26,27 +26,108 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container">
-        <div class="countdown-header">
-            <h1 class="countdown-title">星穹铁道版本倒计时</h1>
-            <p class="countdown-subtitle">实时追踪各版本更新时间与剩余天数</p>
-        </div>
+    <!-- 背景装饰元素 -->
+    <div class="background-elements">
+        <div class="bg-circle circle-1"></div>
+        <div class="bg-circle circle-2"></div>
+        <div class="bg-circle circle-3"></div>
+        <div class="bg-grid"></div>
+    </div>
+    
+    <!-- 主容器 -->
+    <div class="app-container">
+        <!-- 头部区域 -->
+        <header class="app-header">
+            <div class="header-content">
+                <div class="logo-section">
+                    <div class="logo-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="title-section">
+                        <h1 class="app-title">星穹铁道版本倒计时</h1>
+                        <p class="app-subtitle">实时追踪版本更新进度</p>
+                    </div>
+                </div>
+                <div class="header-controls">
+                    <button class="control-btn" id="refreshBtn" title="刷新数据">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
+                    <button class="control-btn" id="currentVersionBtn" title="定位当前版本">
+                        <i class="fas fa-crosshairs"></i>
+                    </button>
+                </div>
+            </div>
+        </header>
         
-        <div class="countdown-content">
-            <div class="version-list" id="versionList">
-                <!-- 版本倒计时将通过JavaScript动态生成 -->
+        <!-- 统计信息栏 -->
+        <div class="stats-bar">
+            <div class="stat-item">
+                <div class="stat-value" id="totalVersions">0</div>
+                <div class="stat-label">总版本数</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="currentVersion">-</div>
+                <div class="stat-label">当前版本</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="daysRemaining">0</div>
+                <div class="stat-label">剩余天数</div>
             </div>
         </div>
         
-        <footer>
-            <p>© 2025 星穹铁道版本倒计时 | 数据仅供参考，请以官方公告为准</p>
-            <p class="keyboard-hint">💡 提示：按空格键可快速定位到当前版本</p>
+        <!-- 版本列表区域 -->
+        <main class="main-content">
+            <div class="version-filters">
+                <div class="filter-group">
+                    <button class="filter-btn active" data-filter="all">全部</button>
+                    <button class="filter-btn" data-filter="current">当前</button>
+                    <button class="filter-btn" data-filter="upcoming">即将到来</button>
+                    <button class="filter-btn" data-filter="past">历史版本</button>
+                </div>
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="versionSearch" placeholder="搜索版本...">
+                </div>
+            </div>
+            
+            <div class="version-grid" id="versionList">
+                <!-- 版本卡片将通过JavaScript动态生成 -->
+            </div>
+        </main>
+        
+        <!-- 底部信息 -->
+        <footer class="app-footer">
+            <div class="footer-content">
+                <p class="footer-text">
+                    © 2025 星穹铁道版本倒计时 | 数据仅供参考，请以官方公告为准
+                </p>
+                <div class="footer-hints">
+                    <span class="hint-item">
+                        <i class="fas fa-keyboard"></i>
+                        空格键：定位当前版本
+                    </span>
+                    <span class="hint-item">
+                        <i class="fas fa-arrows-alt-v"></i>
+                        滚动浏览所有版本
+                    </span>
+                </div>
+            </div>
         </footer>
     </div>
     
+    <!-- 返回顶部按钮 -->
     <button class="back-to-top" id="backToTop">
-        <i class="fas fa-arrow-up"></i>
+        <i class="fas fa-chevron-up"></i>
     </button>
+    
+    <!-- 加载动画 -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner">
+            <div class="spinner-ring"></div>
+            <div class="spinner-text">加载中...</div>
+        </div>
+    </div>
+    
     <!-- 外部JavaScript文件 -->
     <script src="script.js" defer></script>
 </body>
