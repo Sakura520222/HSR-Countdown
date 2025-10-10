@@ -1,6 +1,6 @@
 # 星穹铁道版本倒计时
 
-🌐 **官方网站**：[box.firefly520.top/time.html](https://box.firefly520.top/time.html)
+🌐 **官方网站**：[box.firefly520.top/HSR-Countdown.html](https://box.firefly520.top/time.html)
 
 一个现代化的星穹铁道版本倒计时应用，采用深色科技风格设计，提供丰富的交互功能和实时数据展示。
 
