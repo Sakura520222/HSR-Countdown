@@ -1,0 +1,1500 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- SEO 和 Open Graph 优化 -->
+    <meta name="description" content="实时追踪星穹铁道各版本更新时间与剩余天数，提供准确的版本倒计时信息。">
+    <meta name="keywords" content="星穹铁道,版本倒计时,崩坏星穹铁道,更新倒计时">
+    
+    <!-- Open Graph 标识 -->
+    <meta property="og:title" content="星穹铁道版本倒计时">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://ts.firefly520.top/view.php/bf1ff10cb82a40337f0bb57a863508ad.png">
+    <meta property="og:url" content="https://box.firefly520.top/time.html">
+    <meta property="og:description" content="实时追踪星穹铁道各版本更新时间与剩余天数，提供准确的版本倒计时信息。">
+    <meta property="og:site_name" content="星穹铁道版本倒计时">
+    
+    <!-- 网站图标 -->
+    <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⏰</text></svg>">
+    
+    <title>星穹铁道版本倒计时</title>
+    
+    <!-- 外部样式表 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+/* 星穹铁道版本倒计时 - 现代化UI样式 */
+
+/* CSS变量定义 - 现代化配色方案 */
+:root {
+    /* 主色调 - 深色科技感 */
+    --primary: #6366f1;
+    --primary-light: #818cf8;
+    --primary-dark: #4f46e5;
+    --secondary: #06b6d4;
+    --secondary-light: #22d3ee;
+    --secondary-dark: #0891b2;
+    
+    /* 背景色 - 深色主题 */
+    --bg-body: #0f172a;
+    --bg-container: rgba(15, 23, 42, 0.95);
+    --bg-card: rgba(30, 41, 59, 0.8);
+    --bg-card-hover: rgba(51, 65, 85, 0.9);
+    --bg-header: rgba(15, 23, 42, 0.9);
+    --bg-footer: rgba(15, 23, 42, 0.9);
+    
+    /* 文字色 */
+    --text-primary: #f8fafc;
+    --text-secondary: #cbd5e1;
+    --text-muted: #64748b;
+    --text-accent: #06b6d4;
+    
+    /* 边框和阴影 */
+    --border-light: rgba(99, 102, 241, 0.2);
+    --border-primary: rgba(99, 102, 241, 0.6);
+    --shadow-light: 0 1px 3px rgba(0, 0, 0, 0.3);
+    --shadow-medium: 0 4px 6px rgba(0, 0, 0, 0.4);
+    --shadow-heavy: 0 10px 25px rgba(0, 0, 0, 0.5);
+    --glow-primary: 0 0 20px rgba(99, 102, 241, 0.3);
+    --glow-secondary: 0 0 20px rgba(6, 182, 212, 0.3);
+    
+    /* 动画 */
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-fast: all 0.15s ease;
+    --transition-slow: all 0.5s ease;
+    
+    /* 圆角 */
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-xl: 20px;
+}
+
+/* 重置样式 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* 基础样式 */
+body {
+    min-height: 100vh;
+    background: var(--bg-body);
+    color: var(--text-primary);
+    font-family: 'Inter', 'Segoe UI', 'Microsoft YaHei', -apple-system, BlinkMacSystemFont, sans-serif;
+    line-height: 1.6;
+    overflow-x: hidden;
+    position: relative;
+}
+
+/* 背景装饰元素 */
+.background-elements {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    overflow: hidden;
+}
+
+.bg-circle {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(40px);
+    opacity: 0.1;
+    animation: float 6s ease-in-out infinite;
+}
+
+.bg-circle.circle-1 {
+    width: 300px;
+    height: 300px;
+    background: var(--primary);
+    top: 10%;
+    left: 10%;
+    animation-delay: 0s;
+}
+
+.bg-circle.circle-2 {
+    width: 200px;
+    height: 200px;
+    background: var(--secondary);
+    top: 60%;
+    right: 10%;
+    animation-delay: 2s;
+}
+
+.bg-circle.circle-3 {
+    width: 150px;
+    height: 150px;
+    background: var(--primary-light);
+    bottom: 20%;
+    left: 20%;
+    animation-delay: 4s;
+}
+
+.bg-grid {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+        linear-gradient(rgba(99, 102, 241, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(99, 102, 241, 0.03) 1px, transparent 1px);
+    background-size: 50px 50px;
+    animation: gridMove 20s linear infinite;
+}
+
+/* 主容器 */
+.app-container {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 20px;
+    position: relative;
+}
+
+/* 头部样式 */
+.app-header {
+    background: var(--bg-header);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border-light);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    margin: 0 -20px;
+    padding: 0 20px;
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 0;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.logo-section {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.logo-icon {
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    border-radius: var(--radius-lg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: white;
+    box-shadow: var(--glow-primary);
+}
+
+.title-section h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--text-primary), var(--text-secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 4px;
+}
+
+.title-section p {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+.header-controls {
+    display: flex;
+    gap: 12px;
+}
+
+.control-btn {
+    width: 44px;
+    height: 44px;
+    border: 1px solid var(--border-light);
+    background: var(--bg-card);
+    border-radius: var(--radius-md);
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.control-btn:hover {
+    background: var(--bg-card-hover);
+    border-color: var(--primary);
+    color: var(--text-primary);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-medium);
+}
+
+/* 统计信息栏 */
+.stats-bar {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin: 30px 0;
+    padding: 0 10px;
+}
+
+.stat-item {
+    background: var(--bg-card);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    text-align: center;
+    transition: var(--transition);
+    backdrop-filter: blur(10px);
+}
+
+.stat-item:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-heavy);
+    border-color: var(--primary);
+}
+
+.stat-value {
+    font-size: 2.5rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 8px;
+}
+
+.stat-label {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* 主内容区域 */
+.main-content {
+    flex: 1;
+    margin-bottom: 40px;
+}
+
+/* 筛选器区域 */
+.version-filters {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    padding: 0 10px;
+    gap: 20px;
+}
+
+.filter-group {
+    display: flex;
+    gap: 8px;
+}
+
+.filter-btn {
+    padding: 10px 20px;
+    border: 1px solid var(--border-light);
+    background: var(--bg-card);
+    color: var(--text-secondary);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: var(--transition);
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.filter-btn:hover,
+.filter-btn.active {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-medium);
+}
+
+.search-box {
+    position: relative;
+    display: flex;
+    align-items: center;
+    min-width: 250px;
+}
+
+.search-box i {
+    position: absolute;
+    left: 12px;
+    color: var(--text-muted);
+    z-index: 1;
+}
+
+.search-box input {
+    width: 100%;
+    padding: 12px 12px 12px 40px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-md);
+    color: var(--text-primary);
+    font-size: 0.9rem;
+    transition: var(--transition);
+}
+
+.search-box input:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+.search-box input::placeholder {
+    color: var(--text-muted);
+}
+
+/* 版本网格布局 */
+.version-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 24px;
+    padding: 0 10px;
+}
+
+/* 版本卡片样式 */
+.version-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    transition: var(--transition);
+    backdrop-filter: blur(10px);
+    position: relative;
+    overflow: hidden;
+}
+
+.version-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(99, 102, 241, 0.1), transparent);
+    transition: left 0.6s ease;
+}
+
+.version-card:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--shadow-heavy);
+    border-color: var(--primary);
+}
+
+.version-card:hover::before {
+    left: 100%;
+}
+
+.version-card.current {
+    border-color: var(--primary);
+    box-shadow: var(--glow-primary);
+    background: linear-gradient(135deg, var(--bg-card), rgba(99, 102, 241, 0.1));
+}
+
+.version-card.current::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--primary), var(--secondary));
+}
+
+.version-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    position: relative;
+}
+
+.version-name {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+.version-status {
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: var(--transition);
+}
+
+.version-status.current {
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: white;
+    box-shadow: var(--shadow-medium);
+}
+
+.version-status.upcoming {
+    background: linear-gradient(135deg, var(--secondary), var(--secondary-dark));
+    color: white;
+    box-shadow: var(--shadow-medium);
+}
+
+.version-status.past {
+    background: var(--bg-card-hover);
+    color: var(--text-muted);
+}
+
+.version-dates {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.version-date {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-md);
+    padding: 16px;
+    text-align: center;
+    transition: var(--transition);
+}
+
+.version-date:hover {
+    background: rgba(255, 255, 255, 0.08);
+    transform: translateY(-2px);
+}
+
+.date-label {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.date-value {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.countdown-display {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-md);
+    padding: 20px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.countdown-display::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(99, 102, 241, 0.1), transparent);
+    animation: shimmer 3s ease-in-out infinite;
+}
+
+.countdown-label {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin-bottom: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.countdown-timer {
+    font-size: 1.8rem;
+    font-weight: 700;
+    font-family: 'Courier New', monospace;
+    letter-spacing: 2px;
+}
+
+.countdown-timer.expired {
+    color: var(--text-muted);
+}
+
+.countdown-timer.upcoming {
+    color: var(--secondary);
+}
+
+.countdown-timer:not(.expired):not(.upcoming) {
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* 底部样式 */
+.app-footer {
+    background: var(--bg-footer);
+    backdrop-filter: blur(20px);
+    border-top: 1px solid var(--border-light);
+    margin: 0 -20px;
+    padding: 0 20px;
+}
+
+.footer-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 30px 0;
+    text-align: center;
+}
+
+.footer-text {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    margin-bottom: 16px;
+}
+
+.footer-hints {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    flex-wrap: wrap;
+}
+
+.hint-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+}
+
+.hint-item i {
+    color: var(--primary);
+}
+
+/* 返回顶部按钮 */
+.back-to-top {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    color: white;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.2rem;
+    box-shadow: var(--shadow-heavy);
+    opacity: 0;
+    visibility: hidden;
+    transition: var(--transition);
+    z-index: 1000;
+}
+
+.back-to-top.visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+.back-to-top:hover {
+    transform: translateY(-4px) scale(1.1);
+    box-shadow: 0 8px 25px rgba(99, 102, 241, 0.4);
+}
+
+/* 加载动画 */
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(15, 23, 42, 0.9);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    backdrop-filter: blur(10px);
+}
+
+.loading-spinner {
+    text-align: center;
+}
+
+.spinner-ring {
+    width: 60px;
+    height: 60px;
+    border: 4px solid rgba(99, 102, 241, 0.3);
+    border-top: 4px solid var(--primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 16px;
+}
+
+.spinner-text {
+    color: var(--text-secondary);
+    font-size: 1rem;
+}
+
+/* 动画定义 */
+@keyframes float {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    33% { transform: translateY(-10px) rotate(120deg); }
+    66% { transform: translateY(5px) rotate(240deg); }
+}
+
+@keyframes gridMove {
+    0% { transform: translate(0, 0); }
+    100% { transform: translate(50px, 50px); }
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes shimmer {
+    0% { left: -100%; }
+    100% { left: 100%; }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes currentVersionHighlight {
+    0% {
+        box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.4);
+        transform: scale(1);
+    }
+    50% {
+        box-shadow: 0 0 0 20px rgba(99, 102, 241, 0);
+        transform: scale(1.02);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(99, 102, 241, 0);
+        transform: scale(1);
+    }
+}
+
+/* 响应式设计 */
+@media (max-width: 1024px) {
+    .version-grid {
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 20px;
+    }
+    
+    .stats-bar {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+    }
+}
+
+@media (max-width: 768px) {
+    .app-container {
+        padding: 0 16px;
+    }
+    
+    .app-header,
+    .app-footer {
+        margin: 0 -16px;
+        padding: 0 16px;
+    }
+    
+    .header-content {
+        flex-direction: column;
+        gap: 16px;
+        text-align: center;
+    }
+    
+    .logo-section {
+        justify-content: center;
+    }
+    
+    .title-section h1 {
+        font-size: 1.8rem;
+    }
+    
+    .version-filters {
+        flex-direction: column;
+        gap: 16px;
+    }
+    
+    .filter-group {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    
+    .search-box {
+        min-width: 100%;
+    }
+    
+    .stats-bar {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+    
+    .version-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+    
+    .footer-hints {
+        flex-direction: column;
+        gap: 12px;
+    }
+    
+    .back-to-top {
+        bottom: 20px;
+        right: 20px;
+        width: 44px;
+        height: 44px;
+    }
+}
+
+@media (max-width: 480px) {
+    .app-container {
+        padding: 0 12px;
+    }
+    
+    .app-header,
+    .app-footer {
+        margin: 0 -12px;
+        padding: 0 12px;
+    }
+    
+    .header-content {
+        padding: 16px 0;
+    }
+    
+    .logo-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 1.2rem;
+    }
+    
+    .title-section h1 {
+        font-size: 1.5rem;
+    }
+    
+    .title-section p {
+        font-size: 0.8rem;
+    }
+    
+    .stat-item {
+        padding: 16px;
+    }
+    
+    .stat-value {
+        font-size: 2rem;
+    }
+    
+    .version-card {
+        padding: 20px;
+    }
+    
+    .version-name {
+        font-size: 1.3rem;
+    }
+    
+    .version-dates {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+    
+    .countdown-timer {
+        font-size: 1.5rem;
+    }
+}
+
+/* 横屏优化 */
+@media (max-height: 500px) and (orientation: landscape) {
+    .app-container {
+        padding: 0 12px;
+    }
+    
+    .main-content {
+        max-height: 60vh;
+        overflow-y: auto;
+    }
+    
+    .version-grid {
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 16px;
+    }
+}
+
+/* 滚动条样式 */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-card);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--primary);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-light);
+}
+    </style>
+</head>
+<body>
+    <!-- 背景装饰元素 -->
+    <div class="background-elements">
+        <div class="bg-circle circle-1"></div>
+        <div class="bg-circle circle-2"></div>
+        <div class="bg-circle circle-3"></div>
+        <div class="bg-grid"></div>
+    </div>
+    
+    <!-- 主容器 -->
+    <div class="app-container">
+        <!-- 头部区域 -->
+        <header class="app-header">
+            <div class="header-content">
+                <div class="logo-section">
+                    <div class="logo-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="title-section">
+                        <h1 class="app-title">星穹铁道版本倒计时</h1>
+                        <p class="app-subtitle">实时追踪版本更新进度</p>
+                    </div>
+                </div>
+                <div class="header-controls">
+                    <button class="control-btn" id="refreshBtn" title="刷新数据">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
+                    <button class="control-btn" id="currentVersionBtn" title="定位当前版本">
+                        <i class="fas fa-crosshairs"></i>
+                    </button>
+                </div>
+            </div>
+        </header>
+        
+        <!-- 统计信息栏 -->
+        <div class="stats-bar">
+            <div class="stat-item">
+                <div class="stat-value" id="totalVersions">0</div>
+                <div class="stat-label">总版本数</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="currentVersion">-</div>
+                <div class="stat-label">当前版本</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="daysRemaining">0</div>
+                <div class="stat-label">剩余天数</div>
+            </div>
+        </div>
+        
+        <!-- 版本列表区域 -->
+        <main class="main-content">
+            <div class="version-filters">
+                <div class="filter-group">
+                    <button class="filter-btn active" data-filter="all">全部</button>
+                    <button class="filter-btn" data-filter="current">当前</button>
+                    <button class="filter-btn" data-filter="upcoming">即将到来</button>
+                    <button class="filter-btn" data-filter="past">历史版本</button>
+                </div>
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="versionSearch" placeholder="搜索版本...">
+                </div>
+            </div>
+            
+            <div class="version-grid" id="versionList">
+                <!-- 版本卡片将通过JavaScript动态生成 -->
+            </div>
+        </main>
+        
+        <!-- 底部信息 -->
+        <footer class="app-footer">
+            <div class="footer-content">
+                <p class="footer-text">
+                    © 2025 星穹铁道版本倒计时 | 数据仅供参考，请以官方公告为准
+                </p>
+                <div class="footer-hints">
+                    <span class="hint-item">
+                        <i class="fas fa-keyboard"></i>
+                        空格键：定位当前版本
+                    </span>
+                    <span class="hint-item">
+                        <i class="fas fa-arrows-alt-v"></i>
+                        滚动浏览所有版本
+                    </span>
+                </div>
+            </div>
+        </footer>
+    </div>
+    
+    <!-- 返回顶部按钮 -->
+    <button class="back-to-top" id="backToTop">
+        <i class="fas fa-chevron-up"></i>
+    </button>
+    
+    <!-- 加载动画 -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner">
+            <div class="spinner-ring"></div>
+            <div class="spinner-text">加载中...</div>
+        </div>
+    </div>
+    
+    <script>
+// 星穹铁道版本倒计时 - 现代化JavaScript功能文件
+
+// 版本数据配置
+const versionData = [
+    { version: "1.0", releaseDate: "2023-04-26", endDate: "2023-06-07" },
+    { version: "1.1", releaseDate: "2023-06-07", endDate: "2023-07-19" },
+    { version: "1.2", releaseDate: "2023-07-19", endDate: "2023-08-30" },
+    { version: "1.3", releaseDate: "2023-08-30", endDate: "2023-10-11" },
+    { version: "1.4", releaseDate: "2023-10-11", endDate: "2023-11-15" },
+    { version: "1.5", releaseDate: "2023-11-15", endDate: "2023-12-27" },
+    { version: "1.6", releaseDate: "2023-12-27", endDate: "2024-02-07" },
+    { version: "2.0", releaseDate: "2024-02-07", endDate: "2024-03-27" },
+    { version: "2.1", releaseDate: "2024-03-27", endDate: "2024-05-08" },
+    { version: "2.2", releaseDate: "2024-05-08", endDate: "2024-06-19" },
+    { version: "2.3", releaseDate: "2024-06-19", endDate: "2024-07-31" },
+    { version: "2.4", releaseDate: "2024-07-31", endDate: "2024-09-10" },
+    { version: "2.5", releaseDate: "2024-09-10", endDate: "2024-10-23" },
+    { version: "2.6", releaseDate: "2024-10-23", endDate: "2024-12-04" },
+    { version: "2.7", releaseDate: "2024-12-04", endDate: "2025-01-15" },
+    { version: "3.0", releaseDate: "2025-01-15", endDate: "2025-02-26" },
+    { version: "3.1", releaseDate: "2025-02-26", endDate: "2025-04-09" },
+    { version: "3.2", releaseDate: "2025-04-09", endDate: "2025-05-21" },
+    { version: "3.3", releaseDate: "2025-05-21", endDate: "2025-07-02" },
+    { version: "3.4", releaseDate: "2025-07-02", endDate: "2025-08-13" },
+    { version: "3.5", releaseDate: "2025-08-13", endDate: "2025-09-24" },
+    { version: "3.6", releaseDate: "2025-09-24", endDate: "2025-11-05" },
+    { version: "3.7", releaseDate: "2025-11-05", endDate: "2025-12-17" },
+    { version: "3.8", releaseDate: "2025-12-17", endDate: "2026-01-28" },
+    { version: "3.9-预测", releaseDate: "2026-01-28", endDate: "2026-03-11" },
+    { version: "4.0-预测", releaseDate: "2026-03-11", endDate: "2026-04-22" }
+];
+
+// 应用状态管理
+let appState = {
+    currentFilter: 'all',
+    searchQuery: '',
+    filteredVersions: [...versionData]
+};
+
+// 工具函数：计算倒计时
+function calculateCountdown(endDate) {
+    const targetDate = new Date(endDate).getTime();
+    const currentDate = new Date().getTime();
+    const diff = targetDate - currentDate;
+    
+    if (diff < 0) {
+        return { days: 0, hours: 0, minutes: 0, seconds: 0, expired: true };
+    }
+    
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+    
+    return { days, hours, minutes, seconds, expired: false };
+}
+
+// 工具函数：格式化数字为两位
+function formatNumber(num) {
+    return num < 10 ? `0${num}` : num;
+}
+
+// 工具函数：获取版本状态
+function getVersionStatus(version) {
+    const now = new Date();
+    const start = new Date(version.releaseDate);
+    const end = new Date(version.endDate);
+    const countdown = calculateCountdown(version.endDate);
+    const isCurrent = now >= start && now <= end;
+    
+    if (isCurrent) {
+        return { text: '当前版本', isCurrent: true, type: 'current' };
+    } else if (countdown.expired) {
+        return { text: '已更新', isCurrent: false, type: 'past' };
+    } else {
+        const daysToRelease = start > now ? Math.ceil((start - now) / (1000 * 60 * 60 * 24)) : 0;
+        const text = daysToRelease > 0 ? `还有 ${daysToRelease} 天发布` : `剩余 ${countdown.days} 天`;
+        return { text, isCurrent: false, type: 'upcoming' };
+    }
+}
+
+// 工具函数：获取当前版本信息
+function getCurrentVersionInfo() {
+    const now = new Date();
+    let currentVersion = null;
+    let daysRemaining = 0;
+    
+    for (const version of versionData) {
+        const start = new Date(version.releaseDate);
+        const end = new Date(version.endDate);
+        
+        if (now >= start && now <= end) {
+            currentVersion = version;
+            const countdown = calculateCountdown(version.endDate);
+            daysRemaining = countdown.days;
+            break;
+        }
+    }
+    
+    return { currentVersion, daysRemaining };
+}
+
+// 工具函数：过滤版本数据
+function filterVersions() {
+    const { currentFilter, searchQuery } = appState;
+    
+    let filtered = versionData.filter(version => {
+        // 搜索过滤
+        if (searchQuery && !version.version.toLowerCase().includes(searchQuery.toLowerCase())) {
+            return false;
+        }
+        
+        // 状态过滤
+        if (currentFilter !== 'all') {
+            const status = getVersionStatus(version);
+            return status.type === currentFilter;
+        }
+        
+        return true;
+    });
+    
+    appState.filteredVersions = filtered;
+    return filtered;
+}
+
+// 更新统计信息
+function updateStats() {
+    const { currentVersion, daysRemaining } = getCurrentVersionInfo();
+    
+    document.getElementById('totalVersions').textContent = versionData.length;
+    document.getElementById('currentVersion').textContent = currentVersion ? `v${currentVersion.version}` : '-';
+    document.getElementById('daysRemaining').textContent = daysRemaining;
+}
+
+// 渲染版本卡片
+function renderVersionCard(version) {
+    const countdown = calculateCountdown(version.endDate);
+    const status = getVersionStatus(version);
+    
+    const versionCard = document.createElement('div');
+    versionCard.className = `version-card ${status.isCurrent ? 'current' : ''}`;
+    versionCard.dataset.version = version.version;
+    versionCard.dataset.status = status.type;
+    
+    if (status.isCurrent) {
+        versionCard.id = 'current-version';
+    }
+    
+    versionCard.innerHTML = `
+        <div class="version-header">
+            <h2 class="version-name">v${version.version}</h2>
+            <div class="version-status ${status.type}">${status.text}</div>
+        </div>
+        <div class="version-dates">
+            <div class="version-date">
+                <div class="date-label">开始日期</div>
+                <div class="date-value">${version.releaseDate}</div>
+            </div>
+            <div class="version-date">
+                <div class="date-label">结束日期</div>
+                <div class="date-value">${version.endDate}</div>
+            </div>
+        </div>
+        <div class="countdown-display">
+            <div class="countdown-label">剩余时间</div>
+            <div class="countdown-timer ${countdown.expired ? 'expired' : ''} ${!countdown.expired && !status.isCurrent ? 'upcoming' : ''}">
+                ${countdown.expired ? '已结束' : `${formatNumber(countdown.days)}天 ${formatNumber(countdown.hours)}:${formatNumber(countdown.minutes)}:${formatNumber(countdown.seconds)}`}
+            </div>
+        </div>
+    `;
+    
+    return versionCard;
+}
+
+// 渲染版本列表
+function renderVersionList() {
+    const versionGrid = document.getElementById('versionList');
+    const filteredVersions = filterVersions();
+    
+    // 显示加载状态
+    versionGrid.innerHTML = `
+        <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: var(--text-muted);">
+            <i class="fas fa-spinner fa-spin" style="font-size: 2rem; margin-bottom: 16px;"></i>
+            <div>正在加载版本数据...</div>
+        </div>
+    `;
+    
+    // 延迟渲染以显示加载效果
+    setTimeout(() => {
+        versionGrid.innerHTML = '';
+        
+        if (filteredVersions.length === 0) {
+            versionGrid.innerHTML = `
+                <div style="grid-column: 1 / -1; text-align: center; padding: 60px; color: var(--text-muted);">
+                    <i class="fas fa-search" style="font-size: 3rem; margin-bottom: 16px; opacity: 0.5;"></i>
+                    <div style="font-size: 1.2rem; margin-bottom: 8px;">未找到匹配的版本</div>
+                    <div style="font-size: 0.9rem;">请尝试调整搜索条件或筛选器</div>
+                </div>
+            `;
+            return;
+        }
+        
+        let currentVersionCard = null;
+        
+        filteredVersions.forEach(version => {
+            const card = renderVersionCard(version);
+            versionGrid.appendChild(card);
+            
+            if (version.version === getCurrentVersionInfo().currentVersion?.version) {
+                currentVersionCard = card;
+            }
+        });
+        
+        // 如果有当前版本，自动滚动到该版本
+        if (currentVersionCard) {
+            setTimeout(() => {
+                currentVersionCard.scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'center',
+                    inline: 'center'
+                });
+                
+                // 添加高亮动画效果
+                currentVersionCard.style.animation = 'currentVersionHighlight 2s ease-in-out';
+            }, 500);
+        }
+    }, 300);
+}
+
+// 更新倒计时显示
+function updateCountdown() {
+    const filteredVersions = appState.filteredVersions;
+    
+    filteredVersions.forEach(version => {
+        const countdown = calculateCountdown(version.endDate);
+        const status = getVersionStatus(version);
+        
+        // 更新倒计时显示
+        const timerElement = document.querySelector(`.version-card[data-version="${version.version}"] .countdown-timer`);
+        if (timerElement) {
+            timerElement.textContent = countdown.expired ? '已结束' : `${formatNumber(countdown.days)}天 ${formatNumber(countdown.hours)}:${formatNumber(countdown.minutes)}:${formatNumber(countdown.seconds)}`;
+            timerElement.className = `countdown-timer ${countdown.expired ? 'expired' : ''} ${!countdown.expired && !status.isCurrent ? 'upcoming' : ''}`;
+        }
+        
+        // 更新状态文本
+        const statusElement = document.querySelector(`.version-card[data-version="${version.version}"] .version-status`);
+        if (statusElement) {
+            statusElement.textContent = status.text;
+            statusElement.className = `version-status ${status.type}`;
+        }
+        
+        // 更新卡片样式
+        const cardElement = document.querySelector(`.version-card[data-version="${version.version}"]`);
+        if (cardElement) {
+            cardElement.className = `version-card ${status.isCurrent ? 'current' : ''}`;
+            cardElement.dataset.status = status.type;
+        }
+    });
+    
+    // 更新统计信息
+    updateStats();
+}
+
+// 设置筛选器功能
+function setupFilters() {
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    const searchInput = document.getElementById('versionSearch');
+    
+    // 筛选器按钮点击事件
+    filterButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            // 移除所有按钮的active类
+            filterButtons.forEach(btn => btn.classList.remove('active'));
+            
+            // 添加active类到当前按钮
+            button.classList.add('active');
+            
+            // 更新应用状态
+            appState.currentFilter = button.dataset.filter;
+            
+            // 重新渲染列表
+            renderVersionList();
+        });
+    });
+    
+    // 搜索框输入事件
+    searchInput.addEventListener('input', (e) => {
+        appState.searchQuery = e.target.value;
+        
+        // 防抖处理，避免频繁渲染
+        clearTimeout(searchInput.debounceTimer);
+        searchInput.debounceTimer = setTimeout(() => {
+            renderVersionList();
+        }, 300);
+    });
+}
+
+// 设置控制按钮功能
+function setupControls() {
+    const refreshBtn = document.getElementById('refreshBtn');
+    const currentVersionBtn = document.getElementById('currentVersionBtn');
+    
+    // 刷新按钮
+    refreshBtn.addEventListener('click', () => {
+        // 添加旋转动画
+        refreshBtn.style.transform = 'rotate(360deg)';
+        refreshBtn.style.transition = 'transform 0.5s ease';
+        
+        // 重新渲染列表
+        renderVersionList();
+        updateStats();
+        
+        // 显示刷新提示
+        showToast('数据已刷新', 'success');
+        
+        // 重置旋转动画
+        setTimeout(() => {
+            refreshBtn.style.transform = 'rotate(0deg)';
+        }, 500);
+    });
+    
+    // 定位当前版本按钮
+    currentVersionBtn.addEventListener('click', scrollToCurrentVersion);
+}
+
+// 设置返回顶部功能
+function setupBackToTop() {
+    const backToTopBtn = document.getElementById('backToTop');
+    
+    if (!backToTopBtn) return;
+    
+    window.addEventListener('scroll', () => {
+        backToTopBtn.classList.toggle('visible', window.pageYOffset > 200);
+    });
+    
+    backToTopBtn.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+}
+
+// 添加键盘快捷键支持
+function setupKeyboardShortcuts() {
+    document.addEventListener('keydown', (event) => {
+        // ESC键返回顶部
+        if (event.key === 'Escape') {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        // 空格键一键定位至当前版本
+        if (event.key === ' ' && event.target === document.body) {
+            event.preventDefault();
+            scrollToCurrentVersion();
+        }
+        // Ctrl+F 聚焦搜索框
+        if (event.ctrlKey && event.key === 'f') {
+            event.preventDefault();
+            document.getElementById('versionSearch').focus();
+        }
+    });
+}
+
+// 一键定位至当前版本
+function scrollToCurrentVersion() {
+    const currentVersionCard = document.getElementById('current-version');
+    if (currentVersionCard) {
+        // 添加高亮动画效果
+        currentVersionCard.style.animation = 'none';
+        setTimeout(() => {
+            currentVersionCard.style.animation = 'currentVersionHighlight 2s ease-in-out';
+        }, 10);
+        
+        // 平滑滚动到当前版本
+        currentVersionCard.scrollIntoView({ 
+            behavior: 'smooth', 
+            block: 'center',
+            inline: 'center'
+        });
+        
+        // 显示提示信息
+        showToast('已定位到当前版本', 'info');
+    } else {
+        showToast('未找到当前版本', 'warning');
+    }
+}
+
+// 显示Toast提示
+function showToast(message, type = 'info') {
+    // 移除已存在的Toast
+    const existingToast = document.getElementById('app-toast');
+    if (existingToast) {
+        existingToast.remove();
+    }
+    
+    // 创建Toast元素
+    const toast = document.createElement('div');
+    toast.id = 'app-toast';
+    toast.innerHTML = `
+        <div class="toast-content">
+            <i class="fas ${getToastIcon(type)}"></i>
+            <span>${message}</span>
+        </div>
+    `;
+    
+    // 设置Toast样式
+    toast.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: var(--bg-card);
+        border: 1px solid var(--border-light);
+        border-radius: var(--radius-md);
+        padding: 16px 20px;
+        color: var(--text-primary);
+        font-size: 0.9rem;
+        z-index: 10000;
+        box-shadow: var(--shadow-heavy);
+        backdrop-filter: blur(10px);
+        transform: translateX(100%);
+        transition: transform 0.3s ease;
+        max-width: 300px;
+    `;
+    
+    document.body.appendChild(toast);
+    
+    // 显示动画
+    setTimeout(() => {
+        toast.style.transform = 'translateX(0)';
+    }, 10);
+    
+    // 自动隐藏
+    setTimeout(() => {
+        toast.style.transform = 'translateX(100%)';
+        setTimeout(() => {
+            if (toast.parentNode) {
+                toast.remove();
+            }
+        }, 300);
+    }, 3000);
+}
+
+// 获取Toast图标
+function getToastIcon(type) {
+    const icons = {
+        success: 'fa-check-circle',
+        error: 'fa-exclamation-circle',
+        warning: 'fa-exclamation-triangle',
+        info: 'fa-info-circle'
+    };
+    return icons[type] || 'fa-info-circle';
+}
+
+// 隐藏加载动画
+function hideLoading() {
+    const loadingOverlay = document.getElementById('loadingOverlay');
+    if (loadingOverlay) {
+        loadingOverlay.style.opacity = '0';
+        setTimeout(() => {
+            loadingOverlay.style.display = 'none';
+        }, 300);
+    }
+}
+
+// 页面加载完成后的初始化
+function initializePage() {
+    // 显示加载动画
+    document.getElementById('loadingOverlay').style.display = 'flex';
+    
+    // 初始化统计信息
+    updateStats();
+    
+    // 渲染版本列表
+    renderVersionList();
+    
+    // 设置各种功能
+    setupFilters();
+    setupControls();
+    setupBackToTop();
+    setupKeyboardShortcuts();
+    
+    // 启动倒计时更新
+    setInterval(updateCountdown, 1000);
+    
+    // 隐藏加载动画
+    setTimeout(hideLoading, 1000);
+    
+    // 添加页面加载完成动画
+    document.body.style.opacity = '0';
+    document.body.style.transition = 'opacity 0.5s ease-in';
+    
+    setTimeout(() => {
+        document.body.style.opacity = '1';
+    }, 100);
+}
+
+// 错误处理
+function handleErrors() {
+    window.addEventListener('error', (event) => {
+        console.error('页面错误:', event.error);
+        showToast('页面加载出现错误', 'error');
+    });
+    
+    window.addEventListener('unhandledrejection', (event) => {
+        console.error('未处理的Promise拒绝:', event.reason);
+        showToast('应用出现异常', 'error');
+    });
+}
+
+// 导出函数供HTML使用
+window.CountdownApp = {
+    initialize: initializePage,
+    updateCountdown: updateCountdown,
+    renderVersionList: renderVersionList,
+    scrollToCurrentVersion: scrollToCurrentVersion
+};
+
+// 页面加载完成后初始化
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializePage);
+} else {
+    initializePage();
+}
+
+// 设置错误处理
+handleErrors();
+    </script>
+</body>
+</html>
